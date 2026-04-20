@@ -29,6 +29,12 @@ Defensive cybersecurity toolkit for blue teaming — vulnerability awareness, re
 
 # Check DNS security
 ./scripts/dns/dns-security-check.sh example.com
+
+# Scan web app for SQLi, XSS, CORS, headers, supply chain
+./scripts/webattacks/webapp-attack-scan.sh --target https://yourapp.com
+
+# Audit project dependencies for CVEs & malicious packages
+./scripts/vulnscan/supply-chain-scan.sh --path /path/to/project --mode full
 ```
 
 ## Tool Categories
@@ -37,7 +43,9 @@ Defensive cybersecurity toolkit for blue teaming — vulnerability awareness, re
 |----------|-------|---------|
 | **Reconnaissance** | nmap, rustscan, naabu, masscan | `recon/network-scan.sh`, `recon/port-sweep.sh` |
 | **Vulnerability Scanning** | nuclei, trivy, grype, nikto | `vulnscan/vuln-scan.sh`, `vulnscan/cve-check.sh` |
+| **Supply Chain Security** | osv-scanner, chain-bench, guarddog, syft | `vulnscan/supply-chain-scan.sh` |
 | **Web App Security** | OWASP ZAP (headless), nikto, whatweb | `vulnscan/webapp-scan.sh` |
+| **Web Attack Defense** | sqlmap, dalfox, ffuf, arjun, mitmproxy | `webattacks/webapp-attack-scan.sh` |
 | **SSL/TLS Analysis** | testssl.sh, sslscan | `crypto/ssl-check.sh` |
 | **DNS Security** | dig, whois, dnstwist | `dns/dns-security-check.sh` |
 | **Hardening** | lynis, CIS benchmarks | `hardening/harden-system.sh`, `hardening/cis-audit.sh` |
@@ -46,6 +54,22 @@ Defensive cybersecurity toolkit for blue teaming — vulnerability awareness, re
 | **Threat Intelligence** | curl + free APIs | `recon/threat-intel.sh` |
 | **Incident Response** | custom scripts | `incident/ir-toolkit.sh` |
 | **System Audit** | lynis, custom checks | `audit/system-audit.sh` |
+
+## Web Attack Detection Coverage
+
+The `webattacks/` suite covers defensive testing for these attack types:
+
+| Attack Type | Scanner | What it detects |
+|-------------|---------|-----------------|
+| **SQL Injection** | sqlmap | Error-based, blind, time-based, UNION, stacked queries |
+| **Cross-Site Scripting (XSS)** | dalfox + XSStrike | Reflected, stored, DOM-based XSS |
+| **CORS Misconfiguration** | Custom checks | Wildcard origins, null origin, subdomain reflection |
+| **SSRF** | SSRFmap | Internal port scanning, cloud metadata access |
+| **Command Injection** | Commix | OS command injection via parameters |
+| **LFI/RFI** | LFISuite | Local/remote file inclusion via path traversal |
+| **MITM Defense** | HSTS + TLS checks | Protocol downgrade, missing HSTS, weak TLS |
+| **Parameter Fuzzing** | ffuf + arjun | Hidden params, directory traversal, API endpoints |
+| **Supply Chain** | osv-scanner + guarddog | Known CVEs in deps, malicious packages |
 
 ## Directory Structure
 
@@ -62,7 +86,10 @@ blueteam/
 │   │   ├── vuln-scan.sh         # Multi-scanner vulnerability assessment
 │   │   ├── cve-check.sh         # Check software versions against CVEs
 │   │   ├── webapp-scan.sh       # Web application security scanner
-│   │   └── container-scan.sh   # Docker/container security
+│   │   ├── container-scan.sh    # Docker/container security
+│   │   └── supply-chain-scan.sh # Dependency CVE & malicious package audit
+│   ├── webattacks/
+│   │   └── webapp-attack-scan.sh # SQLi, XSS, CORS, MITM, fuzzing, headers
 │   ├── hardening/
 │   │   ├── harden-system.sh     # OS hardening script
 │   │   └── cis-audit.sh         # CIS benchmark audit

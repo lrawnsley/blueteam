@@ -145,6 +145,22 @@ install_go_bin "httpx" "github.com/projectdiscovery/httpx/cmd/httpx"
 install_go_bin "grype" "github.com/anchore/grype/cmd/grype"
 install_go_bin "syft" "github.com/anchore/syft/cmd/syft"
 
+# ── Supply Chain Security ───────────────────────────────────────
+echo ""
+info "Installing supply chain security tools..."
+install_go_bin "osv-scanner" "github.com/google/osv-scanner/cmd/osv-scanner"
+install_go_bin "chain-bench" "github.com/aquasecurity/chain-bench/cmd/chain-bench"
+
+# ── Web Attack Scanners (defensive use) ──────────────────────────
+echo ""
+info "Installing web attack detection tools..."
+check_or_install "sqlmap" "sqlmap"
+check_or_install "mitmproxy" "mitmproxy"
+check_or_install "ffuf" "ffuf"
+install_go_bin "dalfox" "github.com/hahwul/dalfox"
+install_go_bin "arjun" "github.com/s0md3v/arjun"
+install_pip "dnstwist" "dnstwist"
+
 # ── Python Security Packages ────────────────────────────────────
 echo ""
 info "Installing Python security packages..."
