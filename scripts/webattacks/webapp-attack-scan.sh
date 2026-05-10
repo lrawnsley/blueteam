@@ -149,7 +149,8 @@ if [[ "$SCAN_TYPE" == "headers" || "$SCAN_TYPE" == "all" ]]; then
     
     FOUND=0
     MISSING=0
-    for header reason in "${(@kv)SEC_HEADERS}"; do
+    for header in "${!SEC_HEADERS[@]}"; do
+        reason="${SEC_HEADERS[$header]}"
         if echo "$HEADERS" | grep -qi "$header"; then
             ok "$header present"
             FOUND=$((FOUND+1))
@@ -177,8 +178,11 @@ fi
 if [[ "$SCAN_TYPE" == "cors" || "$SCAN_TYPE" == "all" ]]; then
     info "═══ CORS Misconfiguration ═══"
     
+    # Derive host from target URL
+    CORS_HOST=$(echo "$TARGET" | sed -E 's|https?://([^/]+).*|\1|')
+    
     # Test with various Origin headers
-    for origin in "https://evil.com" "https://null" "https://$HOST"; do
+    for origin in "https://evil.com" "https://null" "https://$CORS_HOST"; do
         CORS_RESP=$(curl -sI "$TARGET" -H "Origin: $origin" 2>/dev/null)
         ACAO=$(echo "$CORS_RESP" | grep -i "access-control-allow-origin" | tr -d '\r' || true)
         if [[ -n "$ACAO" ]]; then
